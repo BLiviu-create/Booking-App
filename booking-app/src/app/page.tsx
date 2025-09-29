@@ -1,103 +1,88 @@
-import Image from "next/image";
+import { cookies } from "next/headers";
+import ClientLogin from "@/components/ClientLogin";
 
-export default function Home() {
+export default async function HomePage() {
+  const cookieStore = await cookies();
+  const uid = cookieStore.get("uid")?.value;
+  // Do not auto-redirect; keep login visible even if already authenticated
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <main className="min-h-screen bg-gradient-to-b from-sky-50 via-white to-violet-50">
+      <header className="sticky top-0 z-10 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-black/5">
+        <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-8 rounded-lg bg-gradient-to-tr from-violet-500 to-sky-500" />
+            <span className="font-semibold tracking-tight">Phasis Booking</span>
+          </div>
+          <nav className="hidden sm:flex items-center gap-6 text-sm text-gray-600">
+            <a href="#features" className="hover:text-gray-900">Features</a>
+            <a href="#how" className="hover:text-gray-900">How it works</a>
+            <a href="#contact" className="hover:text-gray-900">Contact</a>
+          </nav>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </header>
+
+      <section className="relative">
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute -top-24 -left-24 h-72 w-72 rounded-full bg-violet-400/20 blur-3xl" />
+          <div className="absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-sky-400/20 blur-3xl" />
+        </div>
+
+        <div className="relative mx-auto max-w-6xl px-6 py-16 md:py-24">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+            <div>
+              <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900">
+                Book beautiful stays with ease
+              </h1>
+              <p className="mt-4 text-gray-600 text-lg leading-relaxed">
+                Manage rooms, track availability, and create bookings in seconds. A simple, fast, and reliable hotel booking experience.
+              </p>
+              <ul className="mt-6 space-y-3 text-sm text-gray-700">
+                <li className="flex items-center gap-2">
+                  <span className="h-5 w-5 rounded-full bg-green-500/90 text-white grid place-items-center text-[10px]">✓</span>
+                  Real-time overlap checks prevent double bookings
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="h-5 w-5 rounded-full bg-green-500/90 text-white grid place-items-center text-[10px]">✓</span>
+                  Separate dashboards for admins and clients
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="h-5 w-5 rounded-full bg-green-500/90 text-white grid place-items-center text-[10px]">✓</span>
+                  Quick room and booking management
+                </li>
+              </ul>
+            </div>
+
+            <div className="md:justify-self-end w-full max-w-sm">
+              <div className="border rounded-xl shadow-sm bg-white/70 backdrop-blur p-6">
+                <h2 className="text-lg font-semibold mb-4">Sign in</h2>
+                <ClientLogin />
+                <p className="text-xs text-gray-500 mt-3">Create an account or sign in to continue.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="features" className="mx-auto max-w-6xl px-6 pb-20">
+        <div className="grid md:grid-cols-3 gap-6">
+          <div className="rounded-xl border bg-white p-5 shadow-sm">
+            <div className="h-10 w-10 rounded-md bg-gradient-to-tr from-violet-500 to-fuchsia-500 mb-3" />
+            <h3 className="font-semibold">Smart availability</h3>
+            <p className="text-sm text-gray-600 mt-1">Instant conflict detection keeps your calendar clean.</p>
+          </div>
+          <div className="rounded-xl border bg-white p-5 shadow-sm">
+            <div className="h-10 w-10 rounded-md bg-gradient-to-tr from-sky-500 to-cyan-500 mb-3" />
+            <h3 className="font-semibold">Effortless management</h3>
+            <p className="text-sm text-gray-600 mt-1">Create, update, and track rooms and bookings quickly.</p>
+          </div>
+          <div className="rounded-xl border bg-white p-5 shadow-sm">
+            <div className="h-10 w-10 rounded-md bg-gradient-to-tr from-amber-500 to-orange-500 mb-3" />
+            <h3 className="font-semibold">Role-based access</h3>
+            <p className="text-sm text-gray-600 mt-1">Admin and client views tailored to each user.</p>
+          </div>
+        </div>
+      </section>
+    </main>
   );
 }
