@@ -17,7 +17,7 @@ export default async function ClientPage() {
     include: { room: true },
     orderBy: { startDate: "asc" },
   });
-  const myBookings = myBookingsRaw.map(b => ({
+  const myBookings = myBookingsRaw.map((b: { startDate: Date; endDate: Date } & typeof myBookingsRaw[0]) => ({
     ...b,
     startDate: String(b.startDate),
     endDate: String(b.endDate),
