@@ -3,7 +3,7 @@ import { useState } from "react";
 import { userSchema } from "@/lib/validation";
 
 export default function RegisterPage() {
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [form, setForm] = useState({ name: "", email: "", password: "", role: "client" });
   const [fieldErrors, setFieldErrors] = useState<{ name?: string; email?: string; password?: string }>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -13,7 +13,7 @@ export default function RegisterPage() {
     setFieldErrors({});
     setSubmitError(null);
     setSuccess(false);
-    const result = userSchema.safeParse({ ...form, role: "client" });
+  const result = userSchema.safeParse(form);
     if (!result.success) {
       const errors: { name?: string; email?: string; password?: string } = {};
       result.error.issues.forEach((issue: unknown) => {
@@ -31,9 +31,29 @@ export default function RegisterPage() {
       return;
     }
     try {
-      // You may want to call an API here instead of direct Prisma
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(form)
+      });
+      const data = await res.json();
+      if (!data.success) {
+        // Map API errors to field errors if possible
+        const errors: { name?: string; email?: string; password?: string } = {};
+        if (Array.isArray(data.errors)) {
+          data.errors.forEach((issue: any) => {
+            if (issue.path && issue.path[0] && issue.message) {
+              const key = issue.path[0] as keyof typeof errors;
+              errors[key] = issue.message;
+            }
+          });
+        }
+        setFieldErrors(errors);
+        setSubmitError("Registration failed");
+        return;
+      }
       setSuccess(true);
-      setForm({ name: "", email: "", password: "" });
+  setForm({ name: "", email: "", password: "", role: "client" });
     } catch {
       setSubmitError("Registration failed");
     }
@@ -53,6 +73,17 @@ export default function RegisterPage() {
               onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
             />
             {fieldErrors.name && <div className="text-xs text-red-600">{fieldErrors.name}</div>}
+          </div>
+          <div>
+            <select
+              name="role"
+              className="border px-2 py-1 rounded w-full"
+              value={form.role}
+              onChange={e => setForm(f => ({ ...f, role: e.target.value }))}
+            >
+              <option value="client">Client</option>
+              <option value="admin">Admin</option>
+            </select>
           </div>
           <div>
             <input
