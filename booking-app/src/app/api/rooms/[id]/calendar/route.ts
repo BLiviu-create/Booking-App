@@ -3,15 +3,22 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
-  const roomId = Number(params.id); // ✅ direct, fără await
+  const resolvedParams = await context.params;
+  const roomId = Number(resolvedParams.id);
 
   if (!roomId) {
     return NextResponse.json({ error: "invalid_room" }, { status: 400 });
   }
 
-  const u = new URL(request.url);
+  const urlString = request.url || "";
+  let u: URL;
+  try {
+    u = new URL(urlString);
+  } catch {
+    return NextResponse.json({ error: "invalid_url" }, { status: 400 });
+  }
   const year = Number(u.searchParams.get("year") ?? new Date().getFullYear());
   const month = Number(u.searchParams.get("month") ?? new Date().getMonth()); // 0-based
 

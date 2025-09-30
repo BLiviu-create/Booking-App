@@ -61,5 +61,3 @@ export async function loginNoRedirect(formData: FormData): Promise<{ role: "admi
   const role = user.role === "admin" ? "admin" : "client";
   return { role };
 }
-
-
