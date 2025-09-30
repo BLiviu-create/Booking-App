@@ -30,7 +30,7 @@ export async function createUser(formData: FormData) {
 export async function updateUser(formData: FormData) {
   // Transformăm FormData în obiect simplu
   const rawData = {
-    id: String(formData.get("id") || ""),
+    id: formData.get("id"),
     name: String(formData.get("name") || "").trim(),
     email: String(formData.get("email") || "").trim(),
     role: String(formData.get("role") || "").trim(),
@@ -40,7 +40,7 @@ export async function updateUser(formData: FormData) {
   const parsed = userUpdateSchema.parse(rawData);
 
   await prisma.user.update({
-    where: { id: Number(parsed.id) },
+  where: { id: typeof parsed.id === "string" ? Number(parsed.id) : parsed.id },
     data: {
       name: parsed.name,
       email: parsed.email,
