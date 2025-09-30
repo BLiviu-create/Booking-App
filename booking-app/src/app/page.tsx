@@ -7,79 +7,32 @@ export default async function HomePage() {
   // Do not auto-redirect; keep login visible even if already authenticated
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-sky-50 via-white to-violet-50">
-      <header className="sticky top-0 z-10 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-black/5">
-        <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-gradient-to-tr from-violet-500 to-sky-500" />
-            <span className="font-semibold tracking-tight">Phasis Booking</span>
+  <main className="h-screen flex flex-col items-center relative overflow-hidden">
+      <div className="absolute inset-0 -z-10 animate-gradient bg-gradient-to-br from-blue-400 via-purple-200 to-sky-300" style={{backgroundSize: '200% 200%'}}></div>
+  <header className="w-full flex justify-center pt-2 pb-2 fixed top-0 left-0 z-20 bg-transparent">
+        <div className="flex items-center gap-2">
+          <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-blue-500 to-sky-400 shadow flex items-center justify-center">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#fff" /><text x="12" y="16" textAnchor="middle" fontSize="12" fill="#3b82f6" fontWeight="bold">P</text></svg>
           </div>
-          <nav className="hidden sm:flex items-center gap-6 text-sm text-gray-600">
-            <a href="#features" className="hover:text-gray-900">Features</a>
-            <a href="#how" className="hover:text-gray-900">How it works</a>
-            <a href="#contact" className="hover:text-gray-900">Contact</a>
-          </nav>
+          <span className="font-bold text-xl tracking-tight text-blue-700">Phasis Booking</span>
         </div>
       </header>
 
-      <section className="relative">
-        <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute -top-24 -left-24 h-72 w-72 rounded-full bg-violet-400/20 blur-3xl" />
-          <div className="absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-sky-400/20 blur-3xl" />
-        </div>
-
-        <div className="relative mx-auto max-w-6xl px-6 py-16 md:py-24">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-            <div>
-              <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900">
-                Book beautiful stays with ease
-              </h1>
-              <p className="mt-4 text-gray-600 text-lg leading-relaxed">
-                Manage rooms, track availability, and create bookings in seconds. A simple, fast, and reliable hotel booking experience.
-              </p>
-              <ul className="mt-6 space-y-3 text-sm text-gray-700">
-                <li className="flex items-center gap-2">
-                  <span className="h-5 w-5 rounded-full bg-green-500/90 text-white grid place-items-center text-[10px]">✓</span>
-                  Real-time overlap checks prevent double bookings
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="h-5 w-5 rounded-full bg-green-500/90 text-white grid place-items-center text-[10px]">✓</span>
-                  Separate dashboards for admins and clients
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="h-5 w-5 rounded-full bg-green-500/90 text-white grid place-items-center text-[10px]">✓</span>
-                  Quick room and booking management
-                </li>
-              </ul>
-            </div>
-
-            <div className="md:justify-self-end w-full max-w-sm">
-              <div className="border rounded-xl shadow-sm bg-white/70 backdrop-blur p-6">
-                <h2 className="text-lg font-semibold mb-4">Sign in</h2>
-                <ClientLogin />
-                <p className="text-xs text-gray-500 mt-3">Create an account or sign in to continue.</p>
-              </div>
-            </div>
-          </div>
+      <section className="flex flex-col items-center w-full mt-20">
+        <div className="rounded-lg shadow-lg bg-white/80 backdrop-blur-lg border border-blue-200 p-2 w-full max-w-[220px] mx-auto transition-all duration-500">
+          <ClientLogin />
         </div>
       </section>
 
-      <section id="features" className="mx-auto max-w-6xl px-6 pb-20">
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="rounded-xl border bg-white p-5 shadow-sm">
-            <div className="h-10 w-10 rounded-md bg-gradient-to-tr from-violet-500 to-fuchsia-500 mb-3" />
-            <h3 className="font-semibold">Smart availability</h3>
-            <p className="text-sm text-gray-600 mt-1">Instant conflict detection keeps your calendar clean.</p>
-          </div>
-          <div className="rounded-xl border bg-white p-5 shadow-sm">
-            <div className="h-10 w-10 rounded-md bg-gradient-to-tr from-sky-500 to-cyan-500 mb-3" />
-            <h3 className="font-semibold">Effortless management</h3>
-            <p className="text-sm text-gray-600 mt-1">Create, update, and track rooms and bookings quickly.</p>
-          </div>
-          <div className="rounded-xl border bg-white p-5 shadow-sm">
-            <div className="h-10 w-10 rounded-md bg-gradient-to-tr from-amber-500 to-orange-500 mb-3" />
-            <h3 className="font-semibold">Role-based access</h3>
-            <p className="text-sm text-gray-600 mt-1">Admin and client views tailored to each user.</p>
+      {/* Features section and cards removed for minimal view */}
+      <section className="w-full flex flex-col items-center fixed bottom-0 left-0 z-10 pb-6">
+        <div className="max-w-xl text-center px-4 py-4 rounded-xl bg-white/70 backdrop-blur border border-blue-100 shadow-lg">
+          <h2 className="text-base font-semibold text-blue-700 mb-1 drop-shadow">Effortless Booking. Smarter Management.</h2>
+          <p className="text-xs text-gray-700 mb-1">PhasisBooking streamlines your room reservations with instant availability, secure access, and a beautiful interface. Join hundreds of happy users who save time and stay organized every day.</p>
+          <div className="flex justify-center gap-2 mt-1">
+            <span className="inline-block px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 text-[10px] font-medium shadow">Fast Setup</span>
+            <span className="inline-block px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 text-[10px] font-medium shadow">Secure Access</span>
+            <span className="inline-block px-2 py-0.5 rounded-full bg-sky-100 text-sky-700 text-[10px] font-medium shadow">24/7 Support</span>
           </div>
         </div>
       </section>

@@ -62,18 +62,23 @@ export default function AdminPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50">
+  <main className="min-h-screen flex flex-col items-center justify-start relative overflow-hidden">
+    <div className="absolute inset-0 -z-10 animate-gradient bg-gradient-to-br from-sky-300 via-yellow-100 to-emerald-200" style={{backgroundSize: '200% 200%'}}></div>
+    {/* Vacation background image removed as requested */}
       {/* Header */}
-      <header className="sticky top-0 z-10 backdrop-blur bg-white/60 border-b border-black/5">
-        <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-gradient-to-tr from-violet-500 to-sky-500" />
-            <span className="font-semibold tracking-tight">Admin dashboard</span>
+      <header className="sticky top-0 z-20 backdrop-blur bg-white/80 border-b border-blue-200 shadow-md">
+        <div className="mx-auto max-w-5xl px-6 py-4 flex flex-col gap-2">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-blue-500 to-sky-400 shadow-lg flex items-center justify-center">
+              <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#fff" /><text x="12" y="16" textAnchor="middle" fontSize="12" fill="#3b82f6" fontWeight="bold">A</text></svg>
+            </div>
+            <span className="font-bold text-lg tracking-tight text-blue-700">Admin Dashboard</span>
           </div>
+          <div className="h-4" />
           <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-600">Manage users, rooms, and bookings</span>
+            <span className="text-base text-gray-700 font-medium">Manage users, rooms, and bookings</span>
             <button
-              className="px-3 py-1 bg-gray-200 rounded text-sm font-semibold hover:bg-gray-300"
+              className="px-4 py-2 bg-gradient-to-r from-blue-500 to-sky-400 text-white rounded-lg shadow hover:from-blue-600 hover:to-sky-500 transition font-semibold"
               onClick={handleLogout}
             >
               Log out
@@ -82,11 +87,12 @@ export default function AdminPage() {
         </div>
       </header>
 
-      <div className="mx-auto max-w-6xl px-6 py-8 space-y-10">
+  <div className="mx-auto max-w-3xl px-4 py-10 w-full flex flex-col gap-8 items-center justify-center">
         <h1 className="text-2xl font-bold">Overview</h1>
 
         {/* Users Section */}
-        <section className="p-6 border rounded-xl bg-white shadow-sm">
+  <section className="p-3 rounded-2xl bg-white/30 backdrop-blur-lg shadow-2xl border-4 border-transparent bg-clip-padding hover:border-blue-400 transition-all duration-300 relative">
+    <div className="absolute -inset-1 rounded-2xl pointer-events-none animate-gradient-border"></div>
           <h2 className="font-semibold mb-3">Create User</h2>
           <form
             onSubmit={async (e) => {
@@ -174,7 +180,8 @@ export default function AdminPage() {
         </section>
 
         {/* Rooms Section */}
-        <section className="p-6 border rounded-xl bg-white shadow-sm">
+        <section className="p-3 rounded-2xl bg-white/30 backdrop-blur-lg shadow-2xl border-4 border-transparent bg-clip-padding hover:border-blue-400 transition-all duration-300 relative">
+          <div className="absolute -inset-1 rounded-2xl pointer-events-none animate-gradient-border"></div>
           <h2 className="font-semibold mb-3">Create Room</h2>
           <form
             onSubmit={async (e) => {
@@ -258,7 +265,8 @@ export default function AdminPage() {
         </section>
 
         {/* Bookings Section */}
-        <section className="p-6 border rounded-xl bg-white shadow-sm">
+        <section className="p-3 rounded-2xl bg-white/30 backdrop-blur-lg shadow-2xl border-4 border-transparent bg-clip-padding hover:border-blue-400 transition-all duration-300 relative">
+          <div className="absolute -inset-1 rounded-2xl pointer-events-none animate-gradient-border"></div>
           <h2 className="font-semibold mb-3">Create Booking</h2>
 
           <form

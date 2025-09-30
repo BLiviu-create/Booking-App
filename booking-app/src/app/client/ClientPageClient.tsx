@@ -90,17 +90,21 @@ export default function ClientPageClient({ me, myBookings, allBookings, rooms, u
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50">
-      <header className="sticky top-0 z-10 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-black/5">
-        <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-gradient-to-tr from-violet-500 to-sky-500" />
-            <span className="font-semibold tracking-tight">Client dashboard</span>
+  <main className="min-h-screen flex flex-col items-center justify-start relative overflow-hidden">
+    <div className="absolute inset-0 -z-10 animate-gradient bg-gradient-to-br from-sky-300 via-yellow-100 to-emerald-200" style={{backgroundSize: '200% 200%'}}></div>
+      <header className="sticky top-0 z-20 backdrop-blur bg-white/80 border-b border-blue-200 shadow-md">
+        <div className="mx-auto max-w-5xl px-6 py-4 flex flex-col gap-4">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-blue-500 to-sky-400 shadow-lg flex items-center justify-center">
+              <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#fff" /><text x="12" y="16" textAnchor="middle" fontSize="12" fill="#3b82f6" fontWeight="bold">C</text></svg>
+            </div>
+            <span className="font-bold text-lg tracking-tight text-blue-700">Client Dashboard</span>
           </div>
+          <div className="h-6" />
           <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-600">Welcome, {me.name}</span>
+            <span className="text-base text-gray-700 font-medium">Welcome, <span className="font-semibold text-blue-600">{me.name}</span></span>
             <button
-              className="px-3 py-1 bg-gray-200 rounded text-sm font-semibold hover:bg-gray-300"
+              className="px-4 py-2 bg-gradient-to-r from-blue-500 to-sky-400 text-white rounded-lg shadow hover:from-blue-600 hover:to-sky-500 transition font-semibold"
               onClick={handleLogout}
             >
               Log out
@@ -109,14 +113,14 @@ export default function ClientPageClient({ me, myBookings, allBookings, rooms, u
         </div>
       </header>
 
-      <div className="mx-auto max-w-5xl px-6 py-8 space-y-8">
+  <div className="mx-auto max-w-4xl px-4 py-10 space-y-10 w-full">
         {/* Personal account update removed as requested */}
 
         {/* Form pentru creare rezervare cu Zod validation */}
-        <section className="p-6 border rounded-xl bg-white shadow-sm">
+  <section className="p-6 rounded-xl bg-white/90 shadow-lg border border-blue-100 max-w-md mx-auto">
           <h2 className="font-semibold mb-3">Create booking</h2>
-          <form onSubmit={handleBookingSubmit} className="grid md:grid-cols-4 gap-2 items-end">
-            <div>
+          <form onSubmit={handleBookingSubmit} className="flex flex-col gap-4 items-stretch">
+            <div className="w-full">
               <select
                 name="roomId"
                 className="border px-2 py-1 rounded"
@@ -131,7 +135,7 @@ export default function ClientPageClient({ me, myBookings, allBookings, rooms, u
               </select>
               {bookingFieldErrors.roomId && <div className="text-xs text-red-600">{bookingFieldErrors.roomId}</div>}
             </div>
-            <div>
+            <div className="w-full">
               <input
                 type="datetime-local"
                 name="startDate"
@@ -141,7 +145,7 @@ export default function ClientPageClient({ me, myBookings, allBookings, rooms, u
               />
               {bookingFieldErrors.startDate && <div className="text-xs text-red-600">{bookingFieldErrors.startDate}</div>}
             </div>
-            <div>
+            <div className="w-full flex gap-2 items-center">
               <input
                 type="datetime-local"
                 name="endDate"
@@ -151,7 +155,7 @@ export default function ClientPageClient({ me, myBookings, allBookings, rooms, u
               />
               {bookingFieldErrors.endDate && <div className="text-xs text-red-600">{bookingFieldErrors.endDate}</div>}
             </div>
-            <button className="bg-blue-600 text-white px-3 py-1 rounded" disabled={loading}>{loading ? "Booking..." : "Book"}</button>
+            <button className="bg-blue-600 text-white px-6 py-3 rounded font-semibold text-lg" disabled={loading}>{loading ? "Booking..." : "Book"}</button>
           </form>
           {bookingSubmitError && <div className="text-xs text-red-600 mt-2">{bookingSubmitError}</div>}
           {bookingSuccess && !bookingSubmitError && (
@@ -160,7 +164,7 @@ export default function ClientPageClient({ me, myBookings, allBookings, rooms, u
         </section>
 
         {/* Calendarul rezervărilor */}
-        <section className="p-6 border rounded-xl bg-white shadow-sm">
+  <section className="p-6 rounded-xl bg-white/90 shadow-lg border border-blue-100">
           <h2 className="font-semibold mb-3">My bookings calendar</h2>
           <ClientCalendar bookings={myBookings.map((b: any) => ({
             id: b.id,
@@ -171,7 +175,7 @@ export default function ClientPageClient({ me, myBookings, allBookings, rooms, u
         </section>
 
         {/* Lista rezervărilor */}
-        <section className="p-6 border rounded-xl bg-white shadow-sm">
+  <section className="p-6 rounded-xl bg-white/90 shadow-lg border border-blue-100">
           <h2 className="font-semibold mb-3">My bookings</h2>
           <ul className="space-y-2">
             {myBookings.map((b: any) => (
