@@ -1,11 +1,18 @@
 "use client"; // folosim client pentru state și formulare interactive
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import * as userActions from "@/app/actions/user";
 import * as roomActions from "@/app/actions/room";
 import * as bookingActions from "@/app/actions/booking";
 import ClientRoomsCalendar from "@/components/ClientRoomsCalendar";
 
 export default function AdminPage() {
+  const router = useRouter();
+  function handleLogout() {
+    document.cookie = "uid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "role=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    router.push("/");
+  }
   // Field errors for Create Room and Booking forms
   const [roomFieldErrors, setRoomFieldErrors] = useState<{ number?: string; type?: string; capacity?: string }>({});
   const [bookingFieldErrors, setBookingFieldErrors] = useState<{ userId?: string; roomId?: string; startDate?: string; endDate?: string }>({});
@@ -63,7 +70,15 @@ export default function AdminPage() {
             <div className="h-8 w-8 rounded-lg bg-gradient-to-tr from-violet-500 to-sky-500" />
             <span className="font-semibold tracking-tight">Admin dashboard</span>
           </div>
-          <div className="text-sm text-gray-600">Manage users, rooms, and bookings</div>
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-gray-600">Manage users, rooms, and bookings</span>
+            <button
+              className="px-3 py-1 bg-gray-200 rounded text-sm font-semibold hover:bg-gray-300"
+              onClick={handleLogout}
+            >
+              Log out
+            </button>
+          </div>
         </div>
       </header>
 
