@@ -11,7 +11,7 @@ export default function RoomCalendarModal({
 }: {
   roomId: number;
   open: boolean;
-  onClose: () => void;
+    onClose: () => void;
 }) {
   const now = new Date();
   const [year, setYear] = useState(now.getFullYear());
@@ -37,11 +37,13 @@ export default function RoomCalendarModal({
         const data = await res.json();
         setRoom(data.room);
         setBookings(data.bookings);
-      } catch (err: any) {
-        const isAbort =
-          err?.name === "AbortError" ||
-          err?.message === "modal_closed" ||
-          String(err) === "modal_closed";
+      } catch (err: unknown) {
+        let isAbort = false;
+        if (typeof err === "object" && err !== null) {
+          isAbort = (err as { name?: string }).name === "AbortError" ||
+            (err as { message?: string }).message === "modal_closed";
+        }
+        if (!isAbort && String(err) === "modal_closed") isAbort = true;
         if (!isAbort) console.error(err);
       }
     })();

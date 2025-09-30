@@ -12,20 +12,22 @@ export default async function ClientPage() {
   const me = await prisma.user.findUnique({ where: { id: uid } });
   if (!me) redirect("/");
 
-  const myBookings = await prisma.booking.findMany({
+  const myBookingsRaw = await prisma.booking.findMany({
     where: { userId: uid },
     include: { room: true },
     orderBy: { startDate: "asc" },
   });
+  const myBookings = myBookingsRaw.map(b => ({
+    ...b,
+    startDate: String(b.startDate),
+    endDate: String(b.endDate),
+  }));
 
-  const allBookings = await prisma.booking.findMany({
-    include: { room: true },
-    orderBy: { startDate: "asc" },
-  });
+  // Removed unused allBookings variable
 
   const rooms = await prisma.room.findMany({ orderBy: { number: "asc" } });
 
   // All client logic moved to ClientPageClient
 
-  return <ClientPageClient me={me} myBookings={myBookings} allBookings={allBookings} rooms={rooms} uid={uid} />;
+  return <ClientPageClient me={me} myBookings={myBookings} rooms={rooms} uid={uid} />;
 }

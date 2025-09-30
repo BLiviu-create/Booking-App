@@ -16,9 +16,16 @@ export default function RegisterPage() {
     const result = userSchema.safeParse({ ...form, role: "client" });
     if (!result.success) {
       const errors: { name?: string; email?: string; password?: string } = {};
-      result.error.issues.forEach((issue: any) => {
-        const key = issue.path[0] as keyof typeof errors;
-        if (key) errors[key] = issue.message;
+      result.error.issues.forEach((issue: unknown) => {
+        if (
+          typeof issue === "object" &&
+          issue !== null &&
+          "path" in issue &&
+          Array.isArray((issue as { path: unknown }).path)
+        ) {
+          const key = (issue as { path: unknown[] }).path[0] as keyof typeof errors;
+          if (key && "message" in issue) errors[key] = (issue as { message: string }).message;
+        }
       });
       setFieldErrors(errors);
       return;
@@ -27,7 +34,7 @@ export default function RegisterPage() {
       // You may want to call an API here instead of direct Prisma
       setSuccess(true);
       setForm({ name: "", email: "", password: "" });
-    } catch (err) {
+    } catch {
       setSubmitError("Registration failed");
     }
   }

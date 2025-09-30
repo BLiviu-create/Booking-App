@@ -9,7 +9,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "validation_error", details: result.error.issues }, { status: 400 });
   }
   try {
-    const updateData: any = {};
+  const updateData: Record<string, unknown> = {};
     if (typeof data.name === "string" && data.name.length > 0) {
       updateData.name = data.name;
     }
@@ -24,7 +24,7 @@ export async function POST(request: Request) {
       data: updateData,
     });
     return NextResponse.json({ success: true });
-  } catch (err) {
+  } catch {
     return NextResponse.json({ error: "update_failed" }, { status: 500 });
   }
 }

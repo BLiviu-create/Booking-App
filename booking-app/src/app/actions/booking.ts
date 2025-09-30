@@ -51,8 +51,8 @@ export async function createBooking(formData: FormData) {
   } catch (err) {
     if (err instanceof ZodError) {
       const errors: Record<string, string> = {};
-      err.errors.forEach(e => {
-        if (e.path.length > 0) errors[e.path[0]] = e.message;
+      err.issues.forEach(e => {
+  if (e.path.length > 0) errors[String(e.path[0])] = e.message;
       });
       return { success: false, errors };
     }
@@ -103,8 +103,8 @@ export async function updateBooking(formData: FormData) {
   } catch (err) {
     if (err instanceof ZodError) {
       const errors: Record<string, string> = {};
-      err.errors.forEach(e => {
-        if (e.path.length > 0) errors[e.path[0]] = e.message;
+      err.issues.forEach(e => {
+        if (e.path.length > 0) errors[String(e.path[0])] = e.message;
       });
       return { success: false, errors };
     }

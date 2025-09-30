@@ -1,9 +1,6 @@
-import { cookies } from "next/headers";
 import ClientLogin from "@/components/ClientLogin";
 
 export default async function HomePage() {
-  const cookieStore = await cookies();
-  const uid = cookieStore.get("uid")?.value;
   // Do not auto-redirect; keep login visible even if already authenticated
 
   return (

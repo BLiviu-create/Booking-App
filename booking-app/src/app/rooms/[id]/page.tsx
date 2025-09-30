@@ -1,14 +1,16 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 
-export default async function RoomCalendarPage({ params, searchParams }: { params: { id: string }, searchParams: { year?: string; month?: string } }) {
-  const roomId = Number(params.id);
+export default async function RoomCalendarPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ year?: string; month?: string }> }) {
+  const resolvedParams = await params;
+  const resolvedSearchParams = await searchParams;
+  const roomId = Number(resolvedParams.id);
   const room = await prisma.room.findUnique({ where: { id: roomId } });
   if (!room) return notFound();
 
   const now = new Date();
-  const year = Number(searchParams?.year ?? now.getFullYear());
-  const monthIndex = Number(searchParams?.month ?? now.getMonth()); // 0-based
+  const year = Number(resolvedSearchParams?.year ?? now.getFullYear());
+  const monthIndex = Number(resolvedSearchParams?.month ?? now.getMonth()); // 0-based
 
   const monthStart = new Date(year, monthIndex, 1, 0, 0, 0, 0);
   const monthEnd = new Date(year, monthIndex + 1, 0, 23, 59, 59, 999); // last day of month
@@ -26,22 +28,12 @@ export default async function RoomCalendarPage({ params, searchParams }: { param
 
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-  function addDays(d: Date, days: number) {
-    const nd = new Date(d);
-    nd.setDate(nd.getDate() + days);
-    return nd;
-  }
-
-  function isSameDate(a: Date, b: Date) {
-    return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
-  }
-
   function isDayBooked(day: Date) {
     const dayStartUtcMs = Date.UTC(day.getFullYear(), day.getMonth(), day.getDate(), 0, 0, 0, 0);
     const dayEndUtcMs = Date.UTC(day.getFullYear(), day.getMonth(), day.getDate(), 23, 59, 59, 999);
-    for (const b of bookings as any[]) {
-      const startMs = new Date(b.startDate).getTime();
-      const endMs = new Date(b.endDate).getTime();
+    for (const b of bookings) {
+      const startMs = new Date(String(b.startDate)).getTime();
+      const endMs = new Date(String(b.endDate)).getTime();
       if (startMs <= dayEndUtcMs && endMs >= dayStartUtcMs) return true;
     }
     return false;

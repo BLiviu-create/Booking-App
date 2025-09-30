@@ -1,4 +1,5 @@
 "use client"; // folosim client pentru state și formulare interactive
+import { roomSchema, bookingSchema, userSchema } from "@/lib/validation";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import * as userActions from "@/app/actions/user";
@@ -16,31 +17,27 @@ export default function AdminPage() {
   // Field errors for Create Room and Booking forms
   const [roomFieldErrors, setRoomFieldErrors] = useState<{ number?: string; type?: string; capacity?: string }>({});
   const [bookingFieldErrors, setBookingFieldErrors] = useState<{ userId?: string; roomId?: string; startDate?: string; endDate?: string }>({});
-  // Import schemas
-  const { roomSchema, bookingSchema } = require("@/lib/validation");
   // Field errors for Create User form
   const [userFieldErrors, setUserFieldErrors] = useState<{ name?: string; email?: string; password?: string; role?: string }>({});
-  // Import userSchema
-  const { userSchema } = require("@/lib/validation");
   // State pentru datele din dashboard
-  const [users, setUsers] = useState<any[]>([]);
-  const [rooms, setRooms] = useState<any[]>([]);
-  const [bookings, setBookings] = useState<any[]>([]);
+  const [users, setUsers] = useState<Array<{ id: number; name: string; email: string; role: string }>>([]);
+  const [rooms, setRooms] = useState<Array<{ id: number; number: string; type: string; capacity: number }>>([]);
+  const [bookings, setBookings] = useState<Array<{ id: number; user: { id: number; name: string; email: string; password: string; role: string }; room: { id: number; number: string; type: string; capacity: number }; userId: number; roomId: number; startDate: Date; endDate: Date }>>([]);
   const [errorBooking, setErrorBooking] = useState<string | null>(null);
   const [successBooking, setSuccessBooking] = useState<string | null>(null);
 
   // Fetch inițial date
   useEffect(() => {
     const fetchData = async () => {
-      setUsers(await userActions.listUsers());
-      setRooms(await roomActions.listRooms());
-      setBookings(await bookingActions.listBookings());
+  setUsers(await userActions.listUsers());
+  setRooms(await roomActions.listRooms());
+  setBookings(await bookingActions.listBookings());
     };
     fetchData();
   }, []);
 
   const refreshBookings = async () => {
-    setBookings(await bookingActions.listBookings());
+  setBookings(await bookingActions.listBookings());
   };
 
   const handleCreateBooking = async (formData: FormData) => {
@@ -108,9 +105,16 @@ export default function AdminPage() {
               const result = userSchema.safeParse(rawData);
               if (!result.success) {
                 const errors: { name?: string; email?: string; password?: string; role?: string } = {};
-                result.error.issues.forEach((issue: any) => {
-                  const key = issue.path[0] as keyof typeof errors;
-                  if (key) errors[key] = issue.message;
+                result.error.issues.forEach((issue: unknown) => {
+                  if (
+                    typeof issue === "object" &&
+                    issue !== null &&
+                    "path" in issue &&
+                    Array.isArray((issue as { path: unknown }).path)
+                  ) {
+                    const key = (issue as { path: unknown[] }).path[0] as keyof typeof errors;
+                    if (key && "message" in issue) errors[key] = (issue as { message: string }).message;
+                  }
                 });
                 setUserFieldErrors(errors);
                 return;
@@ -196,11 +200,16 @@ export default function AdminPage() {
               const result = roomSchema.safeParse(rawData);
               if (!result.success) {
                 const errors: { number?: string; type?: string; capacity?: string } = {};
-                result.error.issues.forEach((issue: any) => {
-                  if (issue.path && issue.path.length > 0) {
-                    const key = String(issue.path[0]);
-                    if (key === 'type' || key === 'number' || key === 'capacity') {
-                      errors[key] = issue.message;
+                result.error.issues.forEach((issue: unknown) => {
+                  if (
+                    typeof issue === "object" &&
+                    issue !== null &&
+                    "path" in issue &&
+                    Array.isArray((issue as { path: unknown }).path)
+                  ) {
+                    const key = String((issue as { path: unknown[] }).path[0]);
+                    if ((key === 'type' || key === 'number' || key === 'capacity') && "message" in issue) {
+                      errors[key] = (issue as { message: string }).message;
                     }
                   }
                 });
@@ -283,9 +292,16 @@ export default function AdminPage() {
               const result = bookingSchema.safeParse(rawData);
               if (!result.success) {
                 const errors: { userId?: string; roomId?: string; startDate?: string; endDate?: string } = {};
-                result.error.issues.forEach((issue: any) => {
-                  const key = issue.path[0] as keyof typeof errors;
-                  if (key) errors[key] = issue.message;
+                result.error.issues.forEach((issue: unknown) => {
+                  if (
+                    typeof issue === "object" &&
+                    issue !== null &&
+                    "path" in issue &&
+                    Array.isArray((issue as { path: unknown }).path)
+                  ) {
+                    const key = (issue as { path: unknown[] }).path[0] as keyof typeof errors;
+                    if (key && "message" in issue) errors[key] = (issue as { message: string }).message;
+                  }
                 });
                 setBookingFieldErrors(errors);
                 return;

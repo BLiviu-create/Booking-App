@@ -8,7 +8,7 @@ export async function DELETE(request: Request) {
   try {
     await prisma.booking.delete({ where: { id: Number(id) } });
     return NextResponse.json({ success: true });
-  } catch (err) {
+  } catch {
     return NextResponse.json({ error: "delete_failed" }, { status: 500 });
   }
 }

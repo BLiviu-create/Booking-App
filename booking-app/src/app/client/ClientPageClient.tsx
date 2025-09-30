@@ -1,17 +1,36 @@
 "use client";
 import ClientCalendar from "@/components/ClientCalendar";
-import ClientAccountUpdate from "@/components/ClientAccountUpdate";
 import { bookingSchema } from "@/lib/validation";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-export default function ClientPageClient({ me, myBookings, allBookings, rooms, uid }: any) {
-  const [bookingForm, setBookingForm] = useState({ roomId: rooms[0]?.id || "", startDate: "", endDate: "" });
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  password?: string;
+  role: string;
+}
+interface Booking {
+  id: number;
+  userId: number;
+  roomId: number;
+  startDate: string;
+  endDate: string;
+}
+interface Room {
+  id: number;
+  number: string;
+  type: string;
+  capacity: number;
+}
+export default function ClientPageClient({ me, myBookings, rooms, uid }: { me: User; myBookings: Booking[]; rooms: Room[]; uid: number }) {
+  const router = useRouter();
   const [bookingFieldErrors, setBookingFieldErrors] = useState<{ roomId?: string; startDate?: string; endDate?: string }>({});
+  const [bookingForm, setBookingForm] = useState<{ roomId: number | string; startDate: string; endDate: string }>({ roomId: rooms[0]?.id || "", startDate: "", endDate: "" });
   const [bookingSubmitError, setBookingSubmitError] = useState<string | null>(null);
   const [bookingSuccess, setBookingSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [deleteLoadingId, setDeleteLoadingId] = useState<string | null>(null);
-  const router = useRouter();
+  const [deleteLoadingId, setDeleteLoadingId] = useState<number | string | null>(null);
 
   function handleLogout() {
     document.cookie = "uid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
@@ -43,9 +62,16 @@ export default function ClientPageClient({ me, myBookings, allBookings, rooms, u
     });
     if (!result.success) {
       const errors: { roomId?: string; startDate?: string; endDate?: string } = {};
-      result.error.issues.forEach((issue: any) => {
-        const key = issue.path[0] as keyof typeof errors;
-        if (key) errors[key] = issue.message;
+      result.error.issues.forEach((issue: unknown) => {
+        if (
+          typeof issue === "object" &&
+          issue !== null &&
+          "path" in issue &&
+          Array.isArray((issue as { path: unknown }).path)
+        ) {
+          const key = (issue as { path: unknown[] }).path[0] as keyof typeof errors;
+          if (key && "message" in issue) errors[key] = (issue as { message: string }).message;
+        }
       });
       setBookingFieldErrors(errors);
       return;
@@ -69,7 +95,7 @@ export default function ClientPageClient({ me, myBookings, allBookings, rooms, u
           setBookingSubmitError("This room is already booked for the selected period.");
         } else if (data.error === "validation_error") {
           const errors: { roomId?: string; startDate?: string; endDate?: string } = {};
-          data.details.forEach((issue: any) => {
+          data.details.forEach((issue: { path: string[]; message: string }) => {
             const key = issue.path[0] as keyof typeof errors;
             if (key) errors[key] = issue.message;
           });
@@ -83,7 +109,7 @@ export default function ClientPageClient({ me, myBookings, allBookings, rooms, u
       setBookingSuccess(true);
       setBookingForm({ roomId: rooms[0]?.id || "", startDate: "", endDate: "" });
       router.refresh();
-    } catch (err) {
+    } catch {
       setBookingSubmitError("Booking failed. Please try again.");
       setBookingSuccess(false);
     }
@@ -127,7 +153,7 @@ export default function ClientPageClient({ me, myBookings, allBookings, rooms, u
                 value={bookingForm.roomId}
                 onChange={e => setBookingForm(f => ({ ...f, roomId: e.target.value }))}
               >
-                {rooms.map((r: any) => (
+                {rooms.map((r: Room) => (
                   <option key={r.id} value={r.id}>
                     Room {r.number} ({r.type})
                   </option>
@@ -166,11 +192,11 @@ export default function ClientPageClient({ me, myBookings, allBookings, rooms, u
         {/* Calendarul rezervărilor */}
   <section className="p-6 rounded-xl bg-white/90 shadow-lg border border-blue-100">
           <h2 className="font-semibold mb-3">My bookings calendar</h2>
-          <ClientCalendar bookings={myBookings.map((b: any) => ({
+          <ClientCalendar bookings={(myBookings as Array<Booking & { room: Room }>).map((b) => ({
             id: b.id,
             room: { id: b.room.id, number: b.room.number, type: b.room.type },
-            startDate: b.startDate.toISOString(),
-            endDate: b.endDate.toISOString(),
+            startDate: typeof b.startDate === "string" ? b.startDate : (b.startDate as Date).toISOString(),
+            endDate: typeof b.endDate === "string" ? b.endDate : (b.endDate as Date).toISOString(),
           }))} />
         </section>
 
@@ -178,14 +204,14 @@ export default function ClientPageClient({ me, myBookings, allBookings, rooms, u
   <section className="p-6 rounded-xl bg-white/90 shadow-lg border border-blue-100">
           <h2 className="font-semibold mb-3">My bookings</h2>
           <ul className="space-y-2">
-            {myBookings.map((b: any) => (
+            {(myBookings as Array<Booking & { room: Room }>).map((b) => (
               <li key={b.id} className="text-sm border rounded p-2 flex items-center justify-between">
                 <span>
                   Room {b.room.number} ({b.room.type}) from {new Date(b.startDate).toLocaleString()} to {new Date(b.endDate).toLocaleString()}
                 </span>
                 <button
                   className="ml-4 px-2 py-1 bg-red-600 text-white rounded text-xs"
-                  onClick={() => handleDeleteBooking(b.id)}
+                  onClick={() => handleDeleteBooking(String(b.id))}
                   disabled={deleteLoadingId === b.id}
                 >
                   {deleteLoadingId === b.id ? "Deleting..." : "Delete"}

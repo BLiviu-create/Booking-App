@@ -42,7 +42,7 @@ export default function ClientLogin() {
         const { role } = await loginNoRedirect(formData);
         const url = role === "admin" ? "/admin" : "/client";
         window.open(url, "_blank", "noopener,noreferrer");
-      } catch (err) {
+      } catch {
         setError("Invalid credentials");
       }
     });

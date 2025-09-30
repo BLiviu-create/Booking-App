@@ -3,14 +3,15 @@
 import { useState } from "react";
 import RoomCalendarModal from "@/components/RoomCalendarModal";
 
-export default function ClientRoomsCalendar({ rooms, bookings }: { rooms: any[]; bookings: any[] }) {
+export default function ClientRoomsCalendar({ rooms, bookings }: { rooms: unknown[]; bookings: unknown[] }) {
   const [openRoomId, setOpenRoomId] = useState<number | null>(null);
 
   return (
     <div>
       <ul className="mt-2 space-y-3">
-        {rooms.map((r) => {
-          const rBookings = bookings.filter((b: any) => b.room.id === r.id);
+        {rooms.map((room) => {
+          const r = room as { id: number; number: string; type: string; capacity: number };
+          const rBookings = bookings.filter((b) => (b as { room: { id: number } }).room.id === r.id);
           return (
             <li key={r.id} className="border rounded-xl bg-white p-3 shadow-sm">
               <div className="flex items-center justify-between">
@@ -21,12 +22,15 @@ export default function ClientRoomsCalendar({ rooms, bookings }: { rooms: any[];
                 <p className="text-sm text-gray-500 mt-2">No bookings yet.</p>
               ) : (
                 <ul className="mt-2 space-y-1">
-                  {rBookings.slice(0, 5).map((b: any) => (
-                    <li key={b.id} className="text-xs text-gray-700">
-                      <span className="inline-block h-2 w-2 rounded-full bg-emerald-500 align-middle mr-2" />
-                      {new Date(b.startDate).toLocaleString()} → {new Date(b.endDate).toLocaleString()} · {b.user.name}
-                    </li>
-                  ))}
+                  {rBookings.slice(0, 5).map((b) => {
+                    const booking = b as { id: number; startDate: string | Date; endDate: string | Date; user: { name: string } };
+                    return (
+                      <li key={booking.id} className="text-xs text-gray-700">
+                        <span className="inline-block h-2 w-2 rounded-full bg-emerald-500 align-middle mr-2" />
+                        {new Date(booking.startDate).toLocaleString()} → {new Date(booking.endDate).toLocaleString()} · {booking.user.name}
+                      </li>
+                    );
+                  })}
                   {rBookings.length > 5 ? (
                     <li className="text-xs text-gray-500">and {rBookings.length - 5} more…</li>
                   ) : null}

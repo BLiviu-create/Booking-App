@@ -22,9 +22,16 @@ export default function ClientAccountUpdate({ user }: { user: { id: string; name
     const result = userUpdateSchema.safeParse(form);
     if (!result.success) {
       const errors: { name?: string; email?: string; password?: string } = {};
-      result.error.issues.forEach((issue: any) => {
-        const key = issue.path[0] as keyof typeof errors;
-        if (key) errors[key] = issue.message;
+      result.error.issues.forEach((issue: unknown) => {
+        if (
+          typeof issue === "object" &&
+          issue !== null &&
+          "path" in issue &&
+          Array.isArray((issue as { path: unknown }).path)
+        ) {
+          const key = (issue as { path: unknown[] }).path[0] as keyof typeof errors;
+          if (key && "message" in issue) errors[key] = (issue as { message: string }).message;
+        }
       });
       setFieldErrors(errors);
       return;
@@ -39,9 +46,16 @@ export default function ClientAccountUpdate({ user }: { user: { id: string; name
         const data = await res.json();
         if (data.error === "validation_error") {
           const errors: { name?: string; email?: string; password?: string } = {};
-          data.details.forEach((issue: any) => {
-            const key = issue.path[0] as keyof typeof errors;
-            if (key) errors[key] = issue.message;
+          data.details.forEach((issue: unknown) => {
+            if (
+              typeof issue === "object" &&
+              issue !== null &&
+              "path" in issue &&
+              Array.isArray((issue as { path: unknown }).path)
+            ) {
+              const key = (issue as { path: unknown[] }).path[0] as keyof typeof errors;
+              if (key && "message" in issue) errors[key] = (issue as { message: string }).message;
+            }
           });
           setFieldErrors(errors);
         } else {
@@ -52,7 +66,7 @@ export default function ClientAccountUpdate({ user }: { user: { id: string; name
       }
       setSuccess(true);
       router.refresh();
-    } catch (err) {
+    } catch {
       setSubmitError("Update failed");
     }
   }
