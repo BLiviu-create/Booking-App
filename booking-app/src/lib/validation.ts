@@ -28,11 +28,7 @@ export const userSchema = z.object({
 });
 
 export const userUpdateSchema = z.object({
-  id: z.string().regex(/^\\d+$/, { message: "Invalid user ID" }),
-  id: z.union([
-    z.string().regex(/^\d+$/, { message: "Invalid user ID" }),
-    z.number().int().positive({ message: "Invalid user ID" })
-  ]),
+  id: z.string(),
   name: z.string().min(2, { message: "Name must be at least 2 characters" }),
   email: z.string().email({ message: "Invalid email address" }),
   password: z.string().min(6, { message: "Password must be at least 6 characters" }).optional(),
